@@ -1,0 +1,10 @@
+version: '2.3'
+
+services:
+    app:
+        image: ${DOCKER_REGISTRY_PATH}:${DOCKER_REGISTRY_PORT}/angular-app:${APPLICATION_VERSION:-dev}
+        restart: always
+        ports:
+            - ${ANGULAR_APP_PORT}:80
+        volumes:
+            - ./angular/serverlogs:/var/log/nginx

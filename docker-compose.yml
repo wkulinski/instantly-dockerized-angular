@@ -1,0 +1,3 @@
+# Create "root" compose file to preserve project "root" directory path
+# @see https://github.com/docker/compose/issues/3874
+version: '2.3'

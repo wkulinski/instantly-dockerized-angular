@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+elementIn () {
+    local e match="$1"
+    shift
+    for e; do [[ "$e" == "$match" ]] && return 0; done
+    return 1
+}
+
+project_name="${PWD##*/}-app"
+echo "Executing command..."
+scripts=(build create deploy export install manage watch)
+if elementIn "$1" "${scripts[@]}"; then
+    echo "Executing ./bash/$1.sh"
+    eval "./bash/$1.sh ${@:2}"
+elif [ "$1" == "ng" ] ; then
+    echo "Executing docker-compose run angular-cli ng ${@:2}"
+    docker-compose \
+        -p "$project_name" \
+        -f docker-compose.yml \
+        -f ./compose/docker-compose.dev.yml \
+        run --rm angular-cli ng "${@:2}"
+elif [ "$1" == "angular" ] || [ "$1" == "angular-cli" ] ; then
+    echo "Executing docker-compose run angular-cli ${@:2}"
+    docker-compose \
+        -p "$project_name" \
+        -f docker-compose.yml \
+        -f ./compose/docker-compose.dev.yml \
+        run --rm angular-cli "${@:2}"
+elif [ "$1" == "tns" ] ; then
+    echo "Executing docker-compose run native-cli tns ${@:2}"
+    docker-compose \
+        -p "$project_name" \
+        -f docker-compose.yml \
+        -f ./compose/docker-compose.dev.yml \
+        run --rm native-cli tns "${@:2}"
+elif [ "$1" == "native" ] || [ "$1" == "native-cli" ] ; then
+    echo "Executing docker-compose run native-cli ${@:2}"
+    docker-compose \
+        -p "$project_name" \
+        -f docker-compose.yml \
+        -f ./compose/docker-compose.dev.yml \
+        run --rm native-cli "${@:2}"
+elif [ "$1" == "nginx" ] || [ "$1" == "server" ]; then
+    echo "Moving to nginx container shell."
+    docker-compose \
+        -p "$project_name" \
+        -f docker-compose.yml \
+        -f ./compose/docker-compose.dev.yml \
+        exec nginx sh
+else
+    echo "Executing docker-compose exec $@"
+    docker-compose \
+        -p "$project_name" \
+        -f docker-compose.yml \
+        -f ./compose/docker-compose.dev.yml \
+        exec "$@"
+fi
