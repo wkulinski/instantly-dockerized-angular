@@ -12,10 +12,11 @@ services:
             - ${ANGULAR_APP_PATH}/angular:/tmp/angular:z
             - ./angular/node_modules:/tmp/angular/node_modules:z
     native-cli:
-        image: kristophjunge/nativescript
+        build: docker/tns
         privileged: true
         volumes:
             - ${ANGULAR_APP_PATH}/angular/nativescript:/app:z
+            - ./angular/nativescript/node_modules:/app/node_modules:z
     app:
         build: docker/build
         image: ${DOCKER_REGISTRY_PATH}:${DOCKER_REGISTRY_PORT}/angular-app:${APPLICATION_VERSION:-dev}

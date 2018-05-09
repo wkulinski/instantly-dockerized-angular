@@ -57,14 +57,26 @@ project_name="${PWD##*/}-app"
 echo "Creating project..."
 
 if [ "$type" = "angular" ] ; then
+    echo "Creating new Angular project."
     docker-compose -p "$project_name" -f docker-compose.yml -f ./compose/docker-compose.dev.yml run --rm angular-cli ng new . --style=scss
+    echo "Done."
 elif [ "$type" = "nativescript" ] ; then
+    echo "Creating new NativeScript project."
     docker-compose -p "$project_name" -f docker-compose.yml -f ./compose/docker-compose.dev.yml run --rm native-cli tns create . --ng
+    echo "Done."
+    echo "Sass installation."
     docker-compose -p "$project_name" -f docker-compose.yml -f ./compose/docker-compose.dev.yml run --rm native-cli tns install sass
+    echo "Done."
 elif [ "$type" = "angnat" ] ; then
+    echo "Cloning TeamMaestro/angular-native-seed repository"
     git clone https://github.com/TeamMaestro/angular-native-seed.git angular/.
+    echo "Done."
+    echo "Angular dependencies installation."
     docker-compose -p "$project_name" -f docker-compose.yml -f ./compose/docker-compose.dev.yml run --rm angular-cli npm install
+    echo "Done."
+    echo "NativeScript dependencies installation."
     docker-compose -p "$project_name" -f docker-compose.yml -f ./compose/docker-compose.dev.yml run --rm native-cli npm install
+    echo "Done."
 fi
 
 sudo chown -R $USER:$USER angular/*

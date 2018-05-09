@@ -24,13 +24,33 @@ if [ "$1" == "android" ] ; then
         -p "$project_name" \
         -f docker-compose.yml \
         -f ./compose/docker-compose.dev.yml \
-        run --rm native-cli tns livesync android --watch
-elif [ "$1" == "ios" ] ; then
+        rm --force --stop livesync_android_watch
+
+    docker-compose \
+        -p "$project_name" \
+        -f docker-compose.yml \
+        -f ./compose/docker-compose.android.yml \
+        down
+
     docker-compose \
         -p "$project_name" \
         -f docker-compose.yml \
         -f ./compose/docker-compose.dev.yml \
-        run --rm native-cli tns livesync ios --watch
+        run --detach --name livesync_android_watch \
+        native-cli tns livesync android --watch
+
+    docker-compose \
+        -p "$project_name" \
+        -f docker-compose.yml \
+        -f ./compose/docker-compose.android.yml \
+        up -d
+elif [ "$1" == "ios" ] ; then
+    echo "Not supported yet."
+#    docker-compose \
+#        -p "$project_name" \
+#        -f docker-compose.yml \
+#        -f ./compose/docker-compose.dev.yml \
+#        run --rm native-cli tns livesync ios --watch
 elif [ "$1" == "web" ] ; then
     docker-compose \
         -p "$project_name" \

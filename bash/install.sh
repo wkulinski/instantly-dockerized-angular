@@ -48,7 +48,7 @@ fi
 if [ -z "$ANGULAR_CLI_VERSION" ] ; then
     read -p "Pleas enter Angular cli version (leave empty to use default 1.6.1): " ANGULAR_CLI_VERSION
     if [ -z "$ANGULAR_CLI_VERSION" ]; then
-        ANGULAR_CLI_VERSION="8080"
+        ANGULAR_CLI_VERSION="1.6.1"
     fi
     echo "ANGULAR_CLI_VERSION=$ANGULAR_CLI_VERSION" >> .env
 fi
