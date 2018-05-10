@@ -1,26 +1,14 @@
 #!/usr/bin/env bash
 
-echo "Current PATH is $PATH"
-if [[ ! $PATH = *"$PWD"* ]]; then
-    pathvariable='$PATH'
-    echo "Exporting PATH=$pathvariable:$PWD"
+set -e
 
-    if [ -f ~/.bashrc ]; then
-        if [ ! -f ~/.bash_profile ]; then
-            touch ~/.bash_profile
-            echo "~/.bash_profile created."
-        fi
+echo "Coping file..."
+cp ./bash/internal/ins.sh /usr/local/bin/ins
 
-        grep -q -F 'source $HOME/.bashrc' ~/.bash_profile || echo 'source $HOME/.bashrc' >> ~/.bash_profile
-        source ~/.bash_profile
+echo "Making executable..."
+chmod +x /usr/local/bin/ins
 
-        grep -q -F "export PATH=$pathvariable:$PWD" ~/.bashrc || echo "export PATH=$pathvariable:$PWD" >> ~/.bashrc
-        source ~/.bashrc
+echo "Clearing cache..."
+hash -r
 
-        echo "Path exported."
-    else
-        echo "Unable to locate ~/.bashrc file"
-    fi
-else
-    echo "Path is already exported."
-fi
+echo "Export done."

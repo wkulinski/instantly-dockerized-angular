@@ -2,21 +2,25 @@ version: '2.3'
 
 services:
     angular-cli:
-        build: docker/cli
+        build:
+            context: docker/ng
+            args:
+                NODE_VERSION: ${NODE_VERSION}
+                ANGULAR_CLI_VERSION: ${ANGULAR_CLI_VERSION}
         ports:
             - ${ANGULAR_CLI_PORT}:4200
-        environment:
-            NODE_VERSION: 9-alpine
-            NG_CLI_VERSION: ${ANGULAR_CLI_VERSION}
         volumes:
             - ${ANGULAR_APP_PATH}/angular:/tmp/angular:z
             - ./angular/node_modules:/tmp/angular/node_modules:z
     native-cli:
-        build: docker/tns
+        build:
+            context: docker/tns
+            args:
+                NODE_VERSION: ${NODE_VERSION}
+                NATIVESCRIPT_CLI_VERSION: ${NATIVESCRIPT_CLI_VERSION}
         privileged: true
         volumes:
-            - ${ANGULAR_APP_PATH}/angular/nativescript:/app:z
-            - ./angular/nativescript/node_modules:/app/node_modules:z
+            - ${ANGULAR_APP_PATH}/angular/nativescript:/tmp/nativescript:z
     app:
         build: docker/build
         image: ${DOCKER_REGISTRY_PATH}:${DOCKER_REGISTRY_PORT}/angular-app:${APPLICATION_VERSION:-dev}

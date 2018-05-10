@@ -50,6 +50,7 @@ done
 
 echo "Clearing project folder..."
 sudo chown -R $USER:$USER angular/*
+rm -Rf angular/nativescript/.gitkeep
 rm -Rf angular/*
 rm -Rf angular/.gitkeep
 
@@ -58,24 +59,88 @@ echo "Creating project..."
 
 if [ "$type" = "angular" ] ; then
     echo "Creating new Angular project."
-    docker-compose -p "$project_name" -f docker-compose.yml -f ./compose/docker-compose.dev.yml run --rm angular-cli ng new . --style=scss
+
+    docker-compose \
+        -p "$project_name" \
+        -f docker-compose.yml \
+        -f ./compose/docker-compose.dev.yml \
+        run --workdir="/tmp" --rm angular-cli ng new "$project_name" --directory angular --style=scss
+
+    sudo chown -R $USER:$USER angular/*
     echo "Done."
 elif [ "$type" = "nativescript" ] ; then
+#    echo "Clearing project folder..."
+#    sudo rm -Rf angular/nativescript/*
+
     echo "Creating new NativeScript project."
-    docker-compose -p "$project_name" -f docker-compose.yml -f ./compose/docker-compose.dev.yml run --rm native-cli tns create . --ng
+
+#    docker-compose \
+#        -p "$project_name" \
+#        -f docker-compose.yml \
+#        -f ./compose/docker-compose.dev.yml \
+#        run --rm native-cli sh -c "tns create temp --ng && mv ./temp/* ./ && rm -r ./temp && tns platform add android"
+
+
+    docker-compose \
+        -p "$project_name" \
+        -f docker-compose.yml \
+        -f ./compose/docker-compose.dev.yml \
+        run --workdir="/tmp" --rm native-cli tns create nativescript --ng
+
+#        run --workdir="/tmp" --rm native-cli tns create "$project_name" --ng --path nativescript/.
+
+    sudo chown -R $USER:$USER angular/*
+
+    echo "Adding android"
+
+    docker-compose \
+        -p "$project_name" \
+        -f docker-compose.yml \
+        -f ./compose/docker-compose.dev.yml \
+        run --rm native-cli tns platform add android
+
+    echo "Moving new NativeScript project."
+
+#    mv ./angular/nativescript/temp/* ./angular/nativescript/
+#    mv ./angular/nativescript/temp/.* ./angular/nativescript/
+#    rm -Rf ./angular/nativescript/temp
+#    docker-compose -p "$project_name" -f docker-compose.yml -f ./compose/docker-compose.dev.yml run --rm native-cli mv "$project_name/{.,}*" .
+#    docker-compose -p "$project_name" -f docker-compose.yml -f ./compose/docker-compose.dev.yml run --rm native-cli rm -Rf "$project_name"
+
     echo "Done."
     echo "Sass installation."
-    docker-compose -p "$project_name" -f docker-compose.yml -f ./compose/docker-compose.dev.yml run --rm native-cli tns install sass
+
+    docker-compose \
+        -p "$project_name" \
+        -f docker-compose.yml \
+        -f ./compose/docker-compose.dev.yml \
+        run --rm native-cli tns install sass
+
+    sudo chown -R $USER:$USER angular/*
     echo "Done."
 elif [ "$type" = "angnat" ] ; then
     echo "Cloning TeamMaestro/angular-native-seed repository"
     git clone https://github.com/TeamMaestro/angular-native-seed.git angular/.
+    sudo chown -R $USER:$USER angular/*
     echo "Done."
     echo "Angular dependencies installation."
-    docker-compose -p "$project_name" -f docker-compose.yml -f ./compose/docker-compose.dev.yml run --rm angular-cli npm install
+
+    docker-compose \
+        -p "$project_name" \
+        -f docker-compose.yml \
+        -f ./compose/docker-compose.dev.yml \
+        run --rm angular-cli npm install
+
     echo "Done."
     echo "NativeScript dependencies installation."
-    docker-compose -p "$project_name" -f docker-compose.yml -f ./compose/docker-compose.dev.yml run --rm native-cli npm install
+
+    docker-compose \
+        -p "$project_name" \
+        -f docker-compose.yml \
+        -f ./compose/docker-compose.dev.yml \
+        run --rm native-cli npm install
+
+    sudo chown -R $USER:$USER angular/*
     echo "Done."
 fi
 
