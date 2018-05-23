@@ -2,7 +2,7 @@
 # Note: It requires docker-compose 1.13.0
 #
 # Usage: docker-compose up -d
-version: "2.2"
+version: "2.3"
 
 services:
     # Selenium hub

@@ -46,11 +46,27 @@ if [ -z "$ANGULAR_CLI_PORT" ] ; then
 fi
 
 if [ -z "$ANGULAR_CLI_VERSION" ] ; then
-    read -p "Pleas enter Angular cli version (leave empty to use default 1.6.1): " ANGULAR_CLI_VERSION
+    read -p "Pleas enter Angular cli version (leave empty to use default 6): " ANGULAR_CLI_VERSION
     if [ -z "$ANGULAR_CLI_VERSION" ]; then
-        ANGULAR_CLI_VERSION="1.6.1"
+        ANGULAR_CLI_VERSION="6"
     fi
     echo "ANGULAR_CLI_VERSION=$ANGULAR_CLI_VERSION" >> .env
+fi
+
+if [ -z "$NATIVESCRIPT_CLI_VERSION" ] ; then
+    read -p "Pleas enter NativeScript cli version (leave empty to use default latest): " NATIVESCRIPT_CLI_VERSION
+    if [ -z "$NATIVESCRIPT_CLI_VERSION" ]; then
+        NATIVESCRIPT_CLI_VERSION="latest"
+    fi
+    echo "NATIVESCRIPT_CLI_VERSION=$NATIVESCRIPT_CLI_VERSION" >> .env
+fi
+
+if [ -z "$NODE_VERSION" ] ; then
+    read -p "Pleas enter node version (leave empty to use default 9): " NODE_VERSION
+    if [ -z "$NODE_VERSION" ]; then
+        NODE_VERSION="9"
+    fi
+    echo "NODE_VERSION=$NODE_VERSION" >> .env
 fi
 
 # Install docker

@@ -4,27 +4,39 @@ set -e
 
 project_name="${PWD##*/}-app"
 
-if [ "$1" == "android" ] || [ "$1" == "ios" ] ; then
-    docker-compose \
-        -p "$project_name" \
-        -f docker-compose.yml \
-        -f ./compose/docker-compose.dev.yml \
-        rm --force --stop livesync_mobile
-
-    docker-compose \
-        -p "$project_name" \
-        -f docker-compose.yml \
-        -f ./compose/docker-compose.dev.yml \
-        run --detach --name livesync_mobile \
-        native-cli npm run livesync.phone
-fi
+#if [ "$1" == "android" ] || [ "$1" == "ios" ] ; then
+#    livesync_name="$project_name-livesync_mobile"
+#    echo "$livesync_name"
+#    if [ -x "$(docker ps -a | grep -w "$livesync_name")" ]; then
+#        echo "livesync_mobile is stopped"
+#    else
+#    if [ $(docker inspect -f '{{.State.Running}}' "$project_name-livesync_mobile") = "true" ] ; then
+#    if [ ! "$(docker ps -a | grep livesync_mobile)" ]; then
+#        echo ""
+#    else
+#        docker-compose \
+#            -p "$project_name" \
+#            -f docker-compose.yml \
+#            -f ./compose/docker-compose.dev.yml \
+#            rm --force --stop livesync_mobile
+#    fi
+#
+#    docker-compose \
+#        -p "$project_name" \
+#        -f docker-compose.yml \
+#        -f ./compose/docker-compose.dev.yml \
+#        run --detach --service-ports --name livesync_mobile \
+#        native-cli npm run livesync.phone
+#fi
 
 if [ "$1" == "android" ] ; then
-    docker-compose \
-        -p "$project_name" \
-        -f docker-compose.yml \
-        -f ./compose/docker-compose.dev.yml \
-        rm --force --stop livesync_android_watch
+    if [ "$(docker ps -a | grep livesync_android_watch)" ]; then
+        docker-compose \
+            -p "$project_name" \
+            -f docker-compose.yml \
+            -f ./compose/docker-compose.dev.yml \
+            rm --force --stop livesync_android_watch
+    fi
 
     docker-compose \
         -p "$project_name" \
@@ -36,8 +48,8 @@ if [ "$1" == "android" ] ; then
         -p "$project_name" \
         -f docker-compose.yml \
         -f ./compose/docker-compose.dev.yml \
-        run --detach --name livesync_android_watch \
-        native-cli tns livesync android --watch
+        run --detach --service-ports --name livesync_android_watch \
+        native-cli tns run android
 
     docker-compose \
         -p "$project_name" \
@@ -46,15 +58,10 @@ if [ "$1" == "android" ] ; then
         up -d
 elif [ "$1" == "ios" ] ; then
     echo "Not supported yet."
-#    docker-compose \
-#        -p "$project_name" \
-#        -f docker-compose.yml \
-#        -f ./compose/docker-compose.dev.yml \
-#        run --rm native-cli tns livesync ios --watch
 elif [ "$1" == "web" ] ; then
     docker-compose \
         -p "$project_name" \
         -f docker-compose.yml \
         -f ./compose/docker-compose.dev.yml \
-        run --rm angular-cli ng serve "${@:2}"
+        run --rm --service-ports angular-cli ng serve --host 0.0.0.0 "${@:2}"
 fi
