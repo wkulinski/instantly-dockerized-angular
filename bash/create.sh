@@ -69,23 +69,14 @@ if [ "$type" = "angular" ] ; then
     sudo chown -R $USER:$USER angular/*
     echo "Done."
 elif [ "$type" = "nativescript" ] ; then
-#    echo "Clearing project folder..."
-#    sudo rm -Rf angular/nativescript/*
 
     echo "Creating new NativeScript project."
-
-#    docker-compose \
-#        -p "$project_name" \
-#        -f docker-compose.yml \
-#        -f ./compose/docker-compose.dev.yml \
-#        run --rm native-cli sh -c "tns create temp --ng && mv ./temp/* ./ && rm -r ./temp && tns platform add android"
-
 
     docker-compose \
         -p "$project_name" \
         -f docker-compose.yml \
         -f ./compose/docker-compose.dev.yml \
-        run --workdir="/tmp" --rm native-cli tns create nativescript --ng
+        run --workdir="/tmp" --rm native-cli tns create nativescript --template tns-template-drawer-navigation-ng
 
 #        run --workdir="/tmp" --rm native-cli tns create "$project_name" --ng --path nativescript/.
 
@@ -100,13 +91,7 @@ elif [ "$type" = "nativescript" ] ; then
         run --rm native-cli tns platform add android
 
     echo "Moving new NativeScript project."
-
-#    mv ./angular/nativescript/temp/* ./angular/nativescript/
-#    mv ./angular/nativescript/temp/.* ./angular/nativescript/
-#    rm -Rf ./angular/nativescript/temp
-#    docker-compose -p "$project_name" -f docker-compose.yml -f ./compose/docker-compose.dev.yml run --rm native-cli mv "$project_name/{.,}*" .
-#    docker-compose -p "$project_name" -f docker-compose.yml -f ./compose/docker-compose.dev.yml run --rm native-cli rm -Rf "$project_name"
-
+    
     echo "Done."
     echo "Sass installation."
 
